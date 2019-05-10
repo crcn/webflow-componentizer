@@ -1,8 +1,19 @@
-This tool enables you to convert Webflow sites into components that you can use in React apps. It works by downloading published sites, then scans for tagged components that are then compiled to React code.
+This tool enables you to convert Webflow sites into components that you can use in React apps. It works by scanning published sites for elements with a `data-component-name` attribute, then compiles those elements to React code that you can attach custom logic to.
+
+#### Examples
+
+- TODO example source code
+
+#### Getting Started
+
+To get started, you'll need to add information to your site. Here's a basic example site that you can lo
+
+TODO
 
 #### Caveats
 
-There are a few caveats to this tool that you'll need to be aware of:
+There are some limitations to this tooling that you should be aware of:
 
-- Interactions are not compiled
-- 
+- Interactions are not compiled.
+- Built-in Webflow components are not compiled (Dropdown, E-commerce, Slider). 
+- Dynamic CMS bindings are not compiled.
