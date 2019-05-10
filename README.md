@@ -1,4 +1,48 @@
-This tool enables you to convert Webflow sites into components that you can use in React apps. It works by scanning published sites for elements with a `data-component-name` attribute, then compiles those elements to React code that you can attach custom logic to.
+This tool enables you to convert Webflow sites into components that you can use in React apps. It works by scanning published sites for elements with a `data-component-name` attribute, then compiles those elements as React code that you can attach custom logic to. Take this TODO app for example:
+
+![alt](./assets/todos.png)
+
+This can be compiled & included as React code like so:
+
+```javascript
+import {Application as BaseApplication, TodoItem as BaseTodoItem} from './app.html';
+import * as React from 'react';
+
+class TodoItem extends React.Component {
+  render() {
+    const {label} = this.props;
+    return <BaseTodoItem labelProps={{
+      label,
+    }} />
+  }
+}
+
+class Application extends React.Component {
+  state = {
+    items: [
+      {
+        label: 'take out trash'
+      }, 
+      {
+        label: 'walk dog'
+      }
+    ]
+  };
+  render() {
+    const {items} = this.state;
+    const todoItems = items.map((item, i) => {
+      return <TodoItem key={i} label={item} />;
+    });
+    return <BaseApplication
+      items={todoItems}
+    />;
+  }
+}
+```
+
+Which produces this:
+
+[TODO GIF]
 
 #### Examples
 
