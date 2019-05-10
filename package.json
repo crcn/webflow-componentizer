@@ -1,0 +1,24 @@
+{
+  "name": "webflow-componentizer",
+  "version": "1.0.0",
+  "description": "Converts Webflow sites into components that can be used in React apps",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "build:watch": "tsc --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/crcn/webflow-componentizer.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/crcn/webflow-componentizer/issues"
+  },
+  "homepage": "https://github.com/crcn/webflow-componentizer#readme",
+  "devDependencies": {
+    "typescript": "^3.4.5"
+  }
+}
