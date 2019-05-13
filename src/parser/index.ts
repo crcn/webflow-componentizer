@@ -1,5 +1,5 @@
 
-import {Element, Attribute, Node} from './ast';
+import {Element, Attribute, Node, Fragment} from './ast';
 import {
   Scanner,
   Token,
@@ -43,9 +43,9 @@ const TOKEN_TYPE_GROUPS = {
   QUOTE: TOKEN_TYPES.SINGLE_QUOTE | TOKEN_TYPES.DOUBLE_QUOTE,
 };
 
-export const parseSource = (source: string) => {
+export const parseSource = (source: string): Node => {
   const root = parseRoot(new Tokenizer(new Scanner(source)));
-  return root;
+  return root as Node;
 };
 
 const parseRoot = (tokenizer: Tokenizer) => {
@@ -55,7 +55,7 @@ const parseRoot = (tokenizer: Tokenizer) => {
 const parseFragment = (tokenizer: Tokenizer) => {
   const children = parseChildNodes(tokenizer);
   if (children.length === 1) {
-    return children[0];
+    return children[0] as Node;
   }
   return {
     type: ExpressionType.FRAGMENT,

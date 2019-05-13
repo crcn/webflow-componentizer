@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Converts Webflow sites into components that can be used in React apps",
   "main": "index.js",
+  "bin": {
+    "webflow-componentizer": "bin/webflow-cli"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
@@ -19,6 +22,12 @@
   },
   "homepage": "https://github.com/crcn/webflow-componentizer#readme",
   "devDependencies": {
+    "@types/commander": "^2.12.2",
     "typescript": "^3.4.5"
+  },
+  "dependencies": {
+    "@types/node": "^12.0.0",
+    "commander": "^2.20.0",
+    "whatwg-fetch": "^3.0.0"
   }
 }

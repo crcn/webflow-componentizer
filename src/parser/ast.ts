@@ -44,13 +44,13 @@ export type Text = {
   value: string,
 } & BaseNode<ExpressionType.TEXT>;
 
-export type Node = Element | Text | Fragment | StyleElement;
+export type Node = Element | Text | Fragment;
 export type ParentNode = Element | Fragment;
 export type Expression = Node | Attribute;
 
 export type FindNodeFilter = (current: Node) => boolean;
 
-export const isElement = (node: Node): node is Element =>
+export const isElement = (node: BaseNode<any>): node is Element =>
   node.type === ExpressionType.ELEMENT;
 export const isParentNode = (node: Node): node is ParentNode =>
   node.type === ExpressionType.FRAGMENT || isElement(node);
@@ -104,7 +104,7 @@ export const filterElementsByTagName = (
     node => node.type === ExpressionType.ELEMENT && node.tagName === tagName
   );
 
-export const createFragment = (children: Node[]): Fragment => ({
+export const createFragment = (children: BaseNode<any>[]): Fragment => ({
   type: ExpressionType.FRAGMENT,
   children,
 });
@@ -114,8 +114,8 @@ export const appendChild = (child: Node, parent: ParentNode) => ({
   children: [...parent.children, child],
 });
 
-export const prependChild = (child: Node, parent: ParentNode) => ({
-  ...parent,
+export const prependChild = <TParent extends ParentNode>(child: Node, parent: TParent) => ({
+  ...(parent as any),
   children: [child, ...parent.children],
 });
 

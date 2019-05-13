@@ -1,1 +1,5 @@
-console.log("OK");
+
+export type Config = {
+  url: string;
+  directory: string;
+};
