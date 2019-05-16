@@ -22,11 +22,22 @@ const pull = async () => {
   await saveVersionedGraph(config.directory, graph);
 };
 
+const build = async () => {
+  const graph = await downloadDependencyGraph(config.sourceUrl);
+  await saveVersionedGraph(config.directory, graph);
+};
+
 
 // pulls the site down 
 program
 .version(pkg)
 .command("pull")
+.action(pull);
+
+// pulls the site down 
+program
+.version(pkg)
+.command("build")
 .action(pull);
 
 
