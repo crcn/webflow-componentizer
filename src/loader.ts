@@ -1,19 +1,20 @@
 // @flow
-import {fetch} from "whatwg-fetch";
+import fetch from "node-fetch";
 import {Graph, GraphDependency, GraphDependencyMimeType} from './graph';
 
 export const downloadUrl = async (url: string): Promise<GraphDependency> => {
   const response = await fetch(url);
-  const content = await response.text();
+  const content = toBuffer(await response.arrayBuffer());
+  
   const contentType = response.headers.get('content-type') || '';
   const mimeType = contentType.split(';').shift();
 
   let dependencies = {};
 
   if (mimeType === 'text/html') {
-    dependencies = resolveHTMLDependencies(content);
+    dependencies = resolveHTMLDependencies(content.toString("utf8"));
   } else if (mimeType === 'text/css') {
-    dependencies = resolveCSSDependencies(content);
+    dependencies = resolveCSSDependencies(content.toString("utf8"));
   } else {
     console.warn(`Cannot scan dependencies for mime-type ${mimeType}`);
   }
@@ -25,6 +26,15 @@ export const downloadUrl = async (url: string): Promise<GraphDependency> => {
     content,
   };
 };
+
+const toBuffer = (ab) => {
+  var buf = Buffer.alloc(ab.byteLength);
+  var view = new Uint8Array(ab);
+  for (var i = 0; i < buf.length; ++i) {
+      buf[i] = view[i];
+  }
+  return buf;
+}
 
 /**
  * Scans HTML for dependencies like CSS and images.

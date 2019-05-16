@@ -1,7 +1,7 @@
 import * as program from "commander";
 import * as fs from "fs";
 import * as path from "path";
-import {downloadUrl} from './loader';
+import {downloadUrl, downloadDependencyGraph} from './loader';
 import {Config} from './index';
 import {DEFAULT_CONFIG_FILE_NAME} from "./constants";
 const pkg = require("../package");
@@ -17,8 +17,7 @@ if (!fs.existsSync(configPath)) {
 const config: Config = require(configPath);
 
 const pull = async () => {
-  console.log(`Downloading ${config.url}`);
-  const graph = await downloadUrl(config.url);
+  const graph = await downloadDependencyGraph(config.sourceUrl);
   console.log(graph);
 };
 

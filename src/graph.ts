@@ -1,6 +1,6 @@
 // @flow
-import {parseSource} from './parser';
-import {parseCSS} from './parser/css-parser';
+import {parseSource} from "./parser";
+import {parseCSS} from "./parser/css-parser";
 import {
   ExpressionType,
   Node,
@@ -16,9 +16,9 @@ import {
   filterElementsByTagName,
   createFragment,
   prependChild,
-} from './parser/ast';
+} from "./parser/ast";
 
-export type GraphDependencyMimeType = 'text/html' | 'text/css';
+export type GraphDependencyMimeType = "text/html" | "text/css";
 
 export type GraphDependency = {
   url: string,
@@ -27,7 +27,7 @@ export type GraphDependency = {
     // relative path : resolved path
     [identifier: string]: string,
   },
-  content: string,
+  content: Buffer,
 };
 
 export type Graph = {
@@ -35,18 +35,18 @@ export type Graph = {
 };
 
 export const bundleHTMLDocuments = (graph: Graph): Fragment[] => {
-  const htmlDocuments = getGraphDependenciesFromMimeType('text/html', graph);
+  const htmlDocuments = getGraphDependenciesFromMimeType("text/html", graph);
   return htmlDocuments.map(document => bundleHTMLDocument(document, graph));
 };
 
 const bundleHTMLDocument = (htmlDocument: GraphDependency, graph: Graph) => {
   const html = parseHTMLGraphDependency(htmlDocument);
-  const body = findElementByTagName(html, 'body');
+  const body = findElementByTagName(html, "body");
 
   let document = createFragment(body.children);
-  const cssLinks = filterElementsByTagName(html, 'link').filter(link =>
+  const cssLinks = filterElementsByTagName(html, "link").filter(link =>
     link.attributes.some(
-      attr => attr.key === 'type' && attr.value === 'text/css'
+      attr => attr.key === "type" && attr.value === "text/css"
     )
   );
   for (const cssLink of cssLinks) {
@@ -57,12 +57,12 @@ const bundleHTMLDocument = (htmlDocument: GraphDependency, graph: Graph) => {
 };
 
 const getCSSStyleFromLink = (cssLink: Element, graph: Graph): StyleElement => {
-  const href = cssLink.attributes.find(attr => attr.key === 'href');
+  const href = cssLink.attributes.find(attr => attr.key === "href");
   const dependency = graph[href.value];
-  const styleSheet = parseCSS(prepareCSSContentForParser(dependency.content));
+  const styleSheet = parseCSS(prepareCSSContentForParser(dependency.content.toString("utf8")));
   return {
     type: ExpressionType.ELEMENT,
-    tagName: 'style',
+    tagName: "style",
     children: [],
     attributes: [],
     styleSheet,
@@ -78,7 +78,7 @@ const getGraphDependenciesFromMimeType = (
   });
 
 const parseHTMLGraphDependency = (dependency: GraphDependency): Element => {
-  let ast = parseSource(prepareHTMLContentForParser(dependency.content));
+  let ast = parseSource(prepareHTMLContentForParser(dependency.content.toString("utf8")));
   ast = pruneExtraneousNodes(ast);
   return ast as Element;
 };
@@ -102,14 +102,14 @@ const pruneExtraneousNodes = (node: Node): Node => {
 
 const prepareHTMLContentForParser = (html: string) => {
   // remove comments
-  html = html.replace(/<!.*?>/g, '');
+  html = html.replace(/<!.*?>/g, "");
 
   return html;
 };
 
 const prepareCSSContentForParser = (css: string) => {
   // remove comments
-  css = css.replace(/\/\*[\s\S]*?\*\//g, '');
+  css = css.replace(/\/\*[\s\S]*?\*\//g, "");
 
   return css;
 };

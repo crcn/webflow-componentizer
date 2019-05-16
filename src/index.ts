@@ -1,5 +1,5 @@
 
 export type Config = {
-  url: string;
+  sourceUrl: string;
   directory: string;
 };
