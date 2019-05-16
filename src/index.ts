@@ -1,6 +1,4 @@
-export enum SupportedFramework {
-  REACT = "react"
-};
+import { SupportedFramework } from "./translate";
 
 
 export type Config = {

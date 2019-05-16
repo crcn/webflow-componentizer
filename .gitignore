@@ -1,2 +1,3 @@
 lib
 node_modules
+**/views/*/*.d.ts

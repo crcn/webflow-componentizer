@@ -2,7 +2,7 @@ import * as program from "commander";
 import * as fs from "fs";
 import * as path from "path";
 import {downloadDependencyGraph} from "./loader";
-import {saveVersionedGraph} from "./versioning";
+import {saveVersionedGraph, writeTypedDefinitionFiles} from "./versioning";
 import {Config} from "./index";
 import {DEFAULT_CONFIG_FILE_NAME} from "./constants";
 const pkg = require("../package");
@@ -22,9 +22,8 @@ const pull = async () => {
   await saveVersionedGraph(config.directory, graph, config.stableVersion);
 };
 
-const build = async () => {
-  const graph = await downloadDependencyGraph(config.sourceUrl);
-  await saveVersionedGraph(config.directory, graph);
+const buildTypedDefinition = async () => {
+  await writeTypedDefinitionFiles((config);
 };
 
 
@@ -37,8 +36,8 @@ program
 // pulls the site down 
 program
 .version(pkg)
-.command("build")
-.action(pull);
+.command("build:typed-definition")
+.action(buildTypedDefinition);
 
 
 program.parse(process.argv);

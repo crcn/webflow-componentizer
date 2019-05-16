@@ -5,7 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "sync": "webflow-componentizer pull",
-    "build": "webflow-componentizer build"
+    "build:typed-definition": "webflow-componentizer build:typed-definition"
   },
   "author": "",
   "license": "ISC",
