@@ -1,5 +1,5 @@
 // @flow
-import {parseSource} from "./parser";
+import {parseSource, prepareHTMLContentForParser} from "./parser";
 import {parseCSS} from "./parser/css-parser";
 import {
   ExpressionType,
@@ -18,7 +18,11 @@ import {
   prependChild,
 } from "./parser/ast";
 
-export type GraphDependencyMimeType = "text/html" | "text/css";
+
+export enum GraphDependencyMimeType {
+  HTML = "text/html",
+  CSS = "text/css"
+};
 
 export type GraphDependency = {
   url: string,
@@ -35,7 +39,7 @@ export type Graph = {
 };
 
 export const bundleHTMLDocuments = (graph: Graph): Fragment[] => {
-  const htmlDocuments = getGraphDependenciesFromMimeType("text/html", graph);
+  const htmlDocuments = getGraphDependenciesFromMimeType(GraphDependencyMimeType.HTML, graph);
   return htmlDocuments.map(document => bundleHTMLDocument(document, graph));
 };
 
@@ -46,7 +50,7 @@ const bundleHTMLDocument = (htmlDocument: GraphDependency, graph: Graph) => {
   let document = createFragment(body.children);
   const cssLinks = filterElementsByTagName(html, "link").filter(link =>
     link.attributes.some(
-      attr => attr.key === "type" && attr.value === "text/css"
+      attr => attr.key === "type" && attr.value === GraphDependencyMimeType.CSS
     )
   );
   for (const cssLink of cssLinks) {
@@ -69,7 +73,7 @@ const getCSSStyleFromLink = (cssLink: Element, graph: Graph): StyleElement => {
   };
 };
 
-const getGraphDependenciesFromMimeType = (
+export const getGraphDependenciesFromMimeType = (
   mimeType: GraphDependencyMimeType,
   graph: Graph
 ) =>
@@ -96,16 +100,6 @@ const pruneExtraneousNodes = (node: Node): Node => {
   return copy;
 };
 
-/**
- * Tiny util for removing extraneous content
- */
-
-const prepareHTMLContentForParser = (html: string) => {
-  // remove comments
-  html = html.replace(/<!.*?>/g, "");
-
-  return html;
-};
 
 const prepareCSSContentForParser = (css: string) => {
   // remove comments

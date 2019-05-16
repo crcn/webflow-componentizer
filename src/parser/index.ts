@@ -63,6 +63,17 @@ const parseFragment = (tokenizer: Tokenizer) => {
   };
 };
 
+/**
+ * Tiny util for removing extraneous content
+ */
+
+export const prepareHTMLContentForParser = (html: string) => {
+  // remove comments
+  html = html.replace(/<!.*?>/g, "");
+
+  return html;
+};
+
 const parseChildNodes = (tokenizer: Tokenizer) => {
   tokenizer.eatWhitespace();
   const children: Node[] = [];

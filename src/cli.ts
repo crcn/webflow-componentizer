@@ -1,8 +1,9 @@
 import * as program from "commander";
 import * as fs from "fs";
 import * as path from "path";
-import {downloadUrl, downloadDependencyGraph} from './loader';
-import {Config} from './index';
+import {downloadDependencyGraph} from "./loader";
+import {saveVersionedGraph} from "./versioning";
+import {Config} from "./index";
 import {DEFAULT_CONFIG_FILE_NAME} from "./constants";
 const pkg = require("../package");
 
@@ -18,7 +19,7 @@ const config: Config = require(configPath);
 
 const pull = async () => {
   const graph = await downloadDependencyGraph(config.sourceUrl);
-  console.log(graph);
+  await saveVersionedGraph(config.directory, graph);
 };
 
 
