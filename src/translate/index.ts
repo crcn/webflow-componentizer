@@ -2,6 +2,7 @@ import {reactTranslateGroup} from "./react";
 import { TranslateGroup, TranslatorType } from "./base";
 import { Element } from "../parser/ast";
 import { Graph } from "../graph";
+import { lintSprite } from "./base/lint";
 export enum SupportedFramework {
   REACT = "react"
 };
@@ -16,14 +17,18 @@ const translators: Translators = {
 
 
 const createTranslator = (type: TranslatorType) => (ast: Element, framework: SupportedFramework = SupportedFramework.REACT) => {
-  return translators[framework][type](ast, {
+  let context = {
     buffer: "",
     entry: ast,
     warnings: [],
     definedObjects: {},
     scopedLabelRefs: {},
     depth: 0
-  });
+  };
+
+  context = lintSprite(ast, context);
+
+  return translators[framework][type](ast, context);
 };
 
 export const translateCode = createTranslator(TranslatorType.CODE);

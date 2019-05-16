@@ -1,7 +1,7 @@
 import { Element } from "../../parser/ast";
 import { TranslateContext } from "./utils";
 
-export type Translator = (ast: Element, context: TranslateContext) => string;
+export type Translator = (ast: Element, context: TranslateContext) => TranslateContext;
 export enum TranslatorType {
   CODE = "code",
   TYPED_DEFINITION = "typedDefinition",

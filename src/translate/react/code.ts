@@ -5,5 +5,5 @@ import { TranslateContext } from "../base/utils";
  */
 
 export const translateHTMLToCode = (ast: Element, context: TranslateContext) => {
-  return "";
+  return null;
 }

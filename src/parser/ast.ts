@@ -76,7 +76,7 @@ export const filterNodes = (node: Node, filter: FindNodeFilter) => {
   return found;
 };
 
-const traverseNodes = (current: Node, each: (node: Node) => void | boolean) => {
+export const traverseNodes = (current: Node, each: (node: Node) => void | boolean) => {
   if (each(current) === false) {
     return false;
   }

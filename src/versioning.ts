@@ -96,7 +96,13 @@ export const writeTypedDefinitionFiles = async ({directory}: Config) => {
     }
 
     const content = fs.readFileSync(spriteFilePath, "utf8");
-    const tdContent = translateTypedDefinition(parseSource(prepareHTMLContentForParser(content)) as Element, );
+    const translateResult = translateTypedDefinition(parseSource(prepareHTMLContentForParser(content)) as Element);
+    if (translateResult.warnings.length) {
+      for (const warning of translateResult.warnings) {
+        console.warn(`Warning: ${warning.message}`);
+      }
+    }
+    const tdContent = translateResult.buffer;
     const tdFilePath = spriteFilePath + ".d.ts";
     console.info(`Writing ${tdFilePath}`);
     fs.writeFileSync(tdFilePath, tdContent);

@@ -1,7 +1,8 @@
 
 import { repeat, uniq, camelCase } from "lodash";
-import { Element } from "../../parser/ast";
+import { Element, filterNodes, getAttributeValue, ExpressionType } from "../../parser/ast";
 import { Graph } from "../../graph";
+import { COMPONENT_ATTRIBUTE_NAME } from "../../constants";
 
 export type TranslateOptions = {
   // compileNonComponents?: boolean;
@@ -143,3 +144,7 @@ export const addWarning = (warning: Error, context: TranslateContext) => ({
   ...context,
   warnings: [...context.warnings, warning]
 });
+
+export const getComponentElements = (ast: Element) => filterNodes(ast, child => {
+  return child.type === ExpressionType.ELEMENT && Boolean(getAttributeValue(COMPONENT_ATTRIBUTE_NAME, child));
+}) as Element[];
