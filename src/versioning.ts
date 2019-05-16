@@ -10,7 +10,7 @@ import { Element, findElementByTagName, findNode, getAttribute, getAttributeValu
  * sites.
  */
 
-export const saveVersionedGraph = async (directory: string, graph: Graph) => {
+export const saveVersionedGraph = async (directory: string, graph: Graph, stableVersion?: string) => {
   const entries = getGraphDependenciesFromMimeType(GraphDependencyMimeType.HTML, graph);
   if (!entries.length) {
     throw new Error(`main HTML entry point not found.`);
@@ -19,7 +19,7 @@ export const saveVersionedGraph = async (directory: string, graph: Graph) => {
   
   const element = parseSource(prepareHTMLContentForParser(mainEntry.content.toString("utf8"))) as Element;
   const body = findElementByTagName(element, "body");
-  const version = getAttributeValue("data-version", body) || "_unversioned";
+  const version = getAttributeValue("data-version", body) || "trunk";
 
   const versionDirectory = `${directory}/${version}`;
 
@@ -31,13 +31,19 @@ export const saveVersionedGraph = async (directory: string, graph: Graph) => {
 
   for (const uri in graph) {
     const dependency = graph[uri];
-    const basename = uri === mainEntry.url ? "index.html" : path.basename(uri);
+    const basename = uri === mainEntry.url ? "sprite.html" : path.basename(uri);
     const versionedFilePath = `${versionDirectory}/${basename}`;
     console.info(`Writing ${versionedFilePath}`);
     fs.writeFileSync(versionedFilePath, dependency.content);
   }
 
   const latestDirectory = `${directory}/latest`;
+
+  try {
+    fs.unlinkSync(latestDirectory);
+  } catch(e) {
+
+  }
 
   try {
     fsa.symlinkSync(versionDirectory, latestDirectory);
@@ -47,5 +53,23 @@ export const saveVersionedGraph = async (directory: string, graph: Graph) => {
 
   }
 
-  fsa.symlinkSync
+  if (stableVersion) {
+
+    const stableDirectory = `${directory}/stable`;
+    const stableVersionDirectory = path.join(directory, stableVersion);
+
+    try {
+      fs.unlinkSync(stableDirectory);
+    } catch(e) {
+
+    }
+
+    try {
+      fsa.symlinkSync(stableVersionDirectory, stableDirectory);
+      console.info(`Symlink ${stableDirectory} -> ${stableVersionDirectory}`);
+
+    } catch(e) {
+
+    }
+  }
 };

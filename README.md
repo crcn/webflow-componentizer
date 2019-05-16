@@ -5,7 +5,7 @@ This tool enables you to convert Webflow sites into components that you can use 
 This can be compiled & included as React code like so:
 
 ```javascript
-import {Application as BaseApplication, TodoItem as BaseTodoItem} from './views/latest/app.html';
+import {Application as BaseApplication, TodoItem as BaseTodoItem} from './views/stable/sprite.html';
 import * as React from 'react';
 
 class TodoItem extends React.Component {

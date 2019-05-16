@@ -19,7 +19,7 @@ const config: Config = require(configPath);
 
 const pull = async () => {
   const graph = await downloadDependencyGraph(config.sourceUrl);
-  await saveVersionedGraph(config.directory, graph);
+  await saveVersionedGraph(config.directory, graph, config.stableVersion);
 };
 
 const build = async () => {
