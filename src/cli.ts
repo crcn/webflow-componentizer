@@ -23,7 +23,7 @@ const pull = async () => {
 };
 
 const buildTypedDefinition = async () => {
-  await writeTypedDefinitionFiles((config);
+  await writeTypedDefinitionFiles(config);
 };
 
 
