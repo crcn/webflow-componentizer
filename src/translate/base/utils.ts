@@ -4,18 +4,17 @@ import { Element } from "../../parser/ast";
 import { Graph } from "../../graph";
 
 export type TranslateOptions = {
-  compileNonComponents?: boolean;
-  includeCSS?: boolean;
+  // compileNonComponents?: boolean;
+  // includeCSS?: boolean;
 };
 
 export type TranslateContext = {
-  options: TranslateOptions;
-  rootDirectory: string;
+  // options: TranslateOptions;
+  // rootDirectory: string;
   buffer: string;
   newLine?: boolean;
   currentScope?: string;
   entry: Element;
-  graph: Graph;
   warnings: Error[];
   definedObjects: {
     // scope id

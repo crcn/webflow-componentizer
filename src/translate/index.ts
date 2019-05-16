@@ -1,6 +1,7 @@
 import {reactTranslateGroup} from "./react";
-import { TranslateGroup } from "./base";
+import { TranslateGroup, TranslatorType } from "./base";
 import { Element } from "../parser/ast";
+import { Graph } from "../graph";
 export enum SupportedFramework {
   REACT = "react"
 };
@@ -13,6 +14,18 @@ const translators: Translators = {
   [SupportedFramework.REACT]: reactTranslateGroup
 };
 
-export const translateCode = (ast: Element, framework: SupportedFramework = SupportedFramework.REACT) => translators[framework].code(ast);
-export const translateTypedDefinition = (ast: Element, framework: SupportedFramework = SupportedFramework.REACT) => translators[framework].typedDefinition(ast);
-export const translateFlowDefinition = (ast: Element, framework: SupportedFramework = SupportedFramework.REACT) => translators[framework].flowDefinition(ast);
+
+const createTranslator = (type: TranslatorType) => (ast: Element, framework: SupportedFramework = SupportedFramework.REACT) => {
+  return translators[framework][type](ast, {
+    buffer: "",
+    entry: ast,
+    warnings: [],
+    definedObjects: {},
+    scopedLabelRefs: {},
+    depth: 0
+  });
+};
+
+export const translateCode = createTranslator(TranslatorType.CODE);
+export const translateTypedDefinition = createTranslator(TranslatorType.TYPED_DEFINITION);
+export const translateFlowDefinition = createTranslator(TranslatorType.FLOW_DEFINITION);
