@@ -1,7 +1,7 @@
 import { Element, filterNodes, ExpressionType, getAttributeValue } from "../../parser/ast";
 import { TranslateContext, getComponentElements, addLine, addOpenTag, addCloseTag } from "../base/utils";
 import { COMPONENT_ATTRIBUTE_NAME } from "../../constants";
-import { getComponentClassName, getNamedNodes, getLayerPropName } from "./utils";
+import { getComponentClassName, getNamedNodes, getLayerPropName, getSlots, getLayerSlotPropName } from "./utils";
 
 
 // TODO 
@@ -28,17 +28,25 @@ const translateComponents = (ast: Element, context: TranslateContext) => {
 
 const translateComponent = (component: Element, context: TranslateContext) => {
   const className = getComponentClassName(component);
-  context = addOpenTag(`export class ${className} extends React.Component {\n`, context);
+  const propsTypeName = `${className}Props`;
+  context = addOpenTag(`type ${propsTypeName} = {\n`, context);
   context = translateComponentProps(component, context);
-  context = addCloseTag(`}\n\n`, context);
+  context = addCloseTag(`};\n\n`, context);
+
+  context = addLine(`export class ${className} extends React.Component<${propsTypeName}> { }\n`, context);
   return context;
 };
 
 const translateComponentProps = (component: Element, context: TranslateContext) => {
   const namedLayers = getNamedNodes(component);
+  const slots = getSlots(component);
   for (const namedLayer of namedLayers) {
     const propName = getLayerPropName(namedLayer);
     context = addLine(`${propName}: React.HTMLAttributes<any>;`, context);
+  }
+  for (const slot of slots) {
+    const propName = getLayerSlotPropName(slot);
+    context = addLine(`${propName}: any;`, context);
   }
 
   return context;

@@ -1,6 +1,6 @@
 import {camelCase} from "lodash";
 import { Element, getAttributeValue, filterNodes, ExpressionType, traverseNodes } from "../../parser/ast";
-import { COMPONENT_ATTRIBUTE_NAME, LAYER_ATTRIBUTE_NAME } from "../../constants";
+import { COMPONENT_ATTRIBUTE_NAME, LAYER_ATTRIBUTE_NAME, SLOT_ATTRIBUTE_NAME } from "../../constants";
 
 const getVarName = (value: string) => {
   const camelName = camelCase(value);
@@ -34,7 +34,32 @@ export const getNamedNodes = (component: Element) => {
   return labeledNodes;
 }
 
+
+export const getSlots = (component: Element) => {
+  const labeledNodes = [];
+  
+  traverseNodes(component, child => {
+    if (child.type === ExpressionType.ELEMENT) {
+      if (getAttributeValue(SLOT_ATTRIBUTE_NAME, child)) {
+        labeledNodes.push(child);
+      }
+
+      if (getAttributeValue(COMPONENT_ATTRIBUTE_NAME, child) && child !== component) {
+        return false;
+      }
+    }
+  });
+
+  return labeledNodes;
+}
+
 export const getLayerPropName = (layer: Element) => {
   const name = getAttributeValue(LAYER_ATTRIBUTE_NAME, layer);
   return getVarName(name) + "Props";
+};
+
+
+export const getLayerSlotPropName = (layer: Element) => {
+  const name = getAttributeValue(SLOT_ATTRIBUTE_NAME, layer);
+  return getVarName(name);
 };

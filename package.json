@@ -33,6 +33,7 @@
     "@types/request": "^2.48.1",
     "commander": "^2.20.0",
     "fs-extra": "^8.0.1",
+    "loader-utils": "^1.2.3",
     "lodash": "^4.17.11",
     "node-fetch": "^2.6.0",
     "request": "^2.88.0",

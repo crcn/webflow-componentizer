@@ -5,6 +5,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "sync": "webflow-componentizer pull",
+    "build": "webpack",
     "build:typed-definition": "webflow-componentizer build:typed-definition"
   },
   "author": "",
@@ -13,12 +14,19 @@
     "@types/fs-extra": "^7.0.0",
     "@types/node": "^12.0.0",
     "@types/react": "^16.8.17",
+    "@types/react-dom": "^16.8.4",
+    "css-loader": "^2.1.1",
+    "html-webpack-plugin": "^3.2.0",
+    "null-loader": "^2.0.0",
+    "style-loader": "^0.23.1",
+    "ts-loader": "^6.0.0",
     "webpack": "^4.31.0",
     "webpack-cli": "^3.3.2"
   },
   "dependencies": {
     "fs-extra": "^8.0.1",
-    "react": "^16.8.6"
+    "react": "^16.8.6",
+    "react-dom": "^16.8.6"
   },
   "description": ""
 }
