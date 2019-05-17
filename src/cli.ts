@@ -31,12 +31,14 @@ const buildTypedDefinition = async () => {
 program
 .version(pkg)
 .command("pull")
+.description("Downloads current website")
 .action(pull);
 
 // pulls the site down 
 program
 .version(pkg)
 .command("build:typed-definition")
+.description("Builds typed definition file for all versions")
 .action(buildTypedDefinition);
 
 
