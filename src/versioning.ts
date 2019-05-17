@@ -1,12 +1,13 @@
 import * as fs from "fs";
 import * as path from "path";
 import * as fsa from "fs-extra";
-import { Graph, getGraphDependenciesFromMimeType,  GraphDependencyMimeType} from "./graph";
+import { Graph, getGraphDependenciesFromMimeType,  GraphDependencyMimeType, GraphDependency} from "./graph";
 import {parseSource, prepareHTMLContentForParser} from "./parser";
 import { Element, findElementByTagName, findNode, getAttribute, getAttributeValue } from "./parser/ast";
 import { Config } from ".";
 import { COMMAND_NAME, MAIN_SPRITE_BASENAME } from "./constants";
 import { translateTypedDefinition } from "./translate";
+import * as crypto from "crypto";
 
 /**
  * This file contains utilities for downloading & maintaining versioned
@@ -14,6 +15,8 @@ import { translateTypedDefinition } from "./translate";
  */
 
 export const saveVersionedGraph = async (directory: string, graph: Graph, stableVersion?: string) => {
+  graph = localizeGraph(graph);
+
   const entries = getGraphDependenciesFromMimeType(GraphDependencyMimeType.HTML, graph);
   if (!entries.length) {
     throw new Error(`main HTML entry point not found.`);
@@ -108,3 +111,33 @@ export const writeTypedDefinitionFiles = async ({directory}: Config) => {
     fs.writeFileSync(tdFilePath, tdContent);
   }
 };
+
+const localizeGraph = (graph: Graph) => {
+  let newGraph = {};
+  for (const uri in graph) {
+    let dep = graph[uri];
+    let newDep = {...dep};
+    let content = dep.content.toString("utf8");
+    let newDeps = {}
+    for (const uri2 in dep.dependencies) {
+      const localFileName = getLocalFileName(uri2);
+      const relativeFilePath = "./" + localFileName;
+      newDeps[relativeFilePath] = relativeFilePath;
+      content = content.replace(uri2, relativeFilePath);
+    }
+    const localFileName = getLocalFileName(uri);
+    newDep.url = "./" + localFileName;
+    newDep.content = new Buffer(content, "utf8");
+    newDep.dependencies = newDeps;
+    newGraph[newDep.url] = newDep;
+  }
+
+  return newGraph;
+}
+
+const getLocalFileName = (uri: string) => {
+  const ext = path.extname(uri);
+  const hashName = crypto.createHash('md5').update(uri).digest("hex");
+  const hashFileName = hashName + ext;
+  return hashFileName;
+}
